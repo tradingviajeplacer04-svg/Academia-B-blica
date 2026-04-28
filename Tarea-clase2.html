@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poesía Hebrea</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* CONFIGURACIÓN BASE */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #0f172a; 
+            display: grid;
+            gap: 60px; /* Margen mayor entre diapositivas */
+            place-items: center;
+            min-height: 100vh;
+            padding: 60px 20px; /* Margen exterior mejorado para evitar que toque los bordes */
+            font-family: 'Inter', sans-serif;
+        }
+
+        .slide-container {
+            width: 100%;
+            max-width: 1280px;
+            min-height: 720px; /* Permite que el contenedor crezca si el texto es muy largo */
+            height: auto;
+            background-color: #f8fafc; 
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        /* ENCABEZADO DE LA INFOGRAFÍA */
+        .quiz-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            color: white;
+            padding: 25px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .quiz-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .progress-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* ÁREA DE CONTENIDO */
+        .content-split {
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            gap: 50px; /* Aumentado el margen entre las dos columnas */
+            padding: 50px; /* Margen interior uniforme */
+            min-height: calc(720px - 90px); 
+        }
+
+        /* LADO IZQUIERDO: Imagen y Pregunta */
+        .q-side {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .image-wrapper {
+            width: 100%;
+            height: 280px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(45deg, #1e293b, #334155);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 60px;
+        }
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .question-text {
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid #f59e0b; 
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .question-text h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 22px;
+            color: #1e293b;
+            line-height: 1.4;
+        }
+
+        /* LADO DERECHO: Opciones y Explicación */
+        .a-side {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: space-between;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            background-color: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px 25px;
+            font-size: 18px;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            user-select: none;
+        }
+        .option:hover {
+            border-color: #3b82f6;
+            background-color: #f0f9ff;
+            transform: translateY(-2px);
+        }
+        .option-letter {
+            background-color: #e2e8f0;
+            color: #475569;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        /* ESTADOS DINÁMICOS */
+        .option.correct-ans {
+            background-color: #ecfdf5 !important;
+            border-color: #10b981 !important;
+            color: #064e3b !important;
+        }
+        .option.correct-ans .option-letter {
+            background-color: #10b981;
+            color: white;
+        }
+        .option.wrong-ans {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #7f1d1d !important;
+        }
+        .option.wrong-ans .option-letter {
+            background-color: #ef4444;
+            color: white;
+        }
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* CAJA DE EXPLICACIÓN */
+        .explanation-box {
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 120px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            border: 2px solid transparent;
+        }
+        .exp-icon {
+            font-size: 28px;
+            margin-top: 2px;
+        }
+        .exp-content h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+        .exp-content p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .explanation-box.show-correct {
+            opacity: 1;
+            visibility: visible;
+            background-color: #ecfdf5;
+            border-color: #10b981;
+            color: #064e3b;
+        }
+        .explanation-box.show-correct .exp-icon { color: #10b981; }
+        
+        .explanation-box.show-wrong {
+            opacity: 1;
+            visibility: visible;
+            background-color: #fef2f2;
+            border-color: #ef4444;
+            color: #7f1d1d;
+        }
+        .explanation-box.show-wrong .exp-icon { color: #ef4444; }
+
+    </style>
+</head>
+<body>
+
+<!-- PREGUNTA 1 -->
+<div class="slide-container" id="slide1">
+    <div class="quiz-header">
+        <h2><i class="fa-solid fa-brain" style="margin-right: 10px;"></i> Repaso: Capítulo 15</h2>
+        <div class="progress-badge">Pregunta 1 de 3</div>
+    </div>
+    
+    <div class="content-split">
+        <div class="q-side">
+            <div class="image-wrapper">
+                <i class="fa-solid fa-scroll"></i>
+            </div>
+            <div class="question-text">
+                <h3>A diferencia de la poesía tradicional occidental, ¿cuál es la característica fundamental y distintiva de la poesía hebrea antigua?</h3>
+            </div>
+        </div>
+
+        <div class="a-side">
+            <div class="options-container" id="opts1">
+                <div class="option" data-correct="false" data-rationale="Esta es una característica común de la poesía occidental (como sonetos o décimas), pero no de la hebrea antigua." onclick="checkAns(this, 'opts1', 'exp1', 1)">
+                    <div class="option-letter">A</div>
+                    <div>Utiliza una métrica estricta y rimas consonantes al final de cada verso.</div>
+                </div>
+                <div class="option" data-correct="true" data-rationale="¡Exacto! El paralelismo es la esencia de la poesía hebrea, donde las líneas se relacionan por su significado lógico (repitiendo o contrastando la idea) en lugar de su sonido." onclick="checkAns(this, 'opts1', 'exp1', 1)">
+                    <div class="option-letter">B</div>
+                    <div>Se basa en la "rima de sentido" o paralelismo conceptual entre sus líneas.</div>
+                </div>
+                <div class="option" data-correct="false" data-rationale="La edad de oro de la poesía hebrea ocurrió mucho antes del exilio, durante la Monarquía Unida bajo David y Salomón." onclick="checkAns(this, 'opts1', 'exp1', 1)">
+                    <div class="option-letter">C</div>
+                    <div>Fue escrita exclusivamente durante el periodo del exilio babilónico.</div>
+                </div>
+                <div class="option" data-correct="false" data-rationale="Al contrario, la poesía hebrea es inmensamente rica en figuras literarias visuales (metáforas, personificaciones) que complementan su mensaje teológico." onclick="checkAns(this, 'opts1', 'exp1', 1)">
+                    <div class="option-letter">D</div>
+                    <div>Carece de figuras retóricas como metáforas, siendo puramente literal.</div>
+                </div>
+            </div>
+
+            <!-- Caja de Explicación -->
+            <div class="explanation-box" id="exp1">
+                <div class="exp-icon"><i class="fa-solid fa-circle-info"></i></div>
+                <div class="exp-content">
+                    <h4 id="title1"></h4>
+                    <p id="desc1"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PREGUNTA 2 -->
+<div class="slide-container" id="slide2">
+    <div class="quiz-header">
+        <h2><i class="fa-solid fa-brain" style="margin-right: 10px;"></i> Repaso: Capítulo 15</h2>
+        <div class="progress-badge">Pregunta 2 de 3</div>
+    </div>
+    
+    <div class="content-split">
+        <div class="q-side">
+            <div class="image-wrapper">
+                <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+            <div class="question-text">
+                <h3>Lee el siguiente texto (Salmo 1:6):<br><br><em>"Porque el Señor conoce el camino de los justos, mas la vía de los malos perecerá."</em><br><br>¿Qué tipo de estructura literaria ejemplifica este verso?</h3>
+            </div>
+        </div>
+
+        <div class="a-side">
+            <div class="options-container" id="opts2">
+                <div class="option" data-correct="false" data-rationale="El paralelismo sinónimo repetiría la misma idea con otras palabras, pero aquí vemos destinos opuestos." onclick="checkAns(this, 'opts2', 'exp2', 2)">
+                    <div class="option-letter">A</div>
+                    <div>Paralelismo Sinónimo</div>
+                </div>
+                <div class="option" data-correct="false" data-rationale="El paralelismo sintético expande o completa un pensamiento inicial, no presenta un contraste tan marcado." onclick="checkAns(this, 'opts2', 'exp2', 2)">
+                    <div class="option-letter">B</div>
+                    <div>Paralelismo Sintético</div>
+                </div>
+                <div class="option" data-correct="true" data-rationale="¡Correcto! La segunda línea presenta una oposición o contraste directo con el pensamiento de la primera línea (camino de los justos vs. vía de los malos)." onclick="checkAns(this, 'opts2', 'exp2', 2)">
+                    <div class="option-letter">C</div>
+                    <div>Paralelismo Antitético</div>
+                </div>
+            </div>
+
+            <!-- Caja de Explicación -->
+            <div class="explanation-box" id="exp2">
+                <div class="exp-icon"><i class="fa-solid fa-circle-info"></i></div>
+                <div class="exp-content">
+                    <h4 id="title2"></h4>
+                    <p id="desc2"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PREGUNTA 3 -->
+<div class="slide-container" id="slide3">
+    <div class="quiz-header">
+        <h2><i class="fa-solid fa-brain" style="margin-right: 10px;"></i> Repaso: Capítulo 15</h2>
+        <div class="progress-badge">Pregunta 3 de 3</div>
+    </div>
+    
+    <div class="content-split">
+        <div class="q-side">
+            <div class="image-wrapper">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div class="question-text">
+                <h3>Dentro de la clasificación por géneros poéticos, ¿cuál de los siguientes libros se considera el mejor ejemplo de poesía "Didáctica" por su enfoque en instruir sobre sabiduría práctica?</h3>
+            </div>
+        </div>
+
+        <div class="a-side">
+            <div class="options-container" id="opts3">
+                <div class="option" data-correct="true" data-rationale="¡Muy bien! El libro de Proverbios fue escrito específicamente para impartir instrucción moral, reglas de vida y sabiduría práctica." onclick="checkAns(this, 'opts3', 'exp3', 3)">
+                    <div class="option-letter">A</div>
+                    <div>Proverbios</div>
+                </div>
+                <div class="option" data-correct="false" data-rationale="Los Salmos son el ejemplo principal de poesía 'Lírica', diseñados para la expresión de sentimientos y la adoración profunda." onclick="checkAns(this, 'opts3', 'exp3', 3)">
+                    <div class="option-letter">B</div>
+                    <div>Salmos</div>
+                </div>
+                <div class="option" data-correct="false" data-rationale="Lamentaciones pertenece al género 'Elegíaco', que se centra en la expresión de duelo, llanto y dolor." onclick="checkAns(this, 'opts3', 'exp3', 3)">
+                    <div class="option-letter">C</div>
+                    <div>Lamentaciones</div>
+                </div>
+                <div class="option" data-correct="false" data-rationale="Cantares (o Cantar de los Cantares) es una obra lírica enfocada en el goce del amor humano, no principalmente en máximas didácticas." onclick="checkAns(this, 'opts3', 'exp3', 3)">
+                    <div class="option-letter">D</div>
+                    <div>Cantares</div>
+                </div>
+            </div>
+
+            <!-- Caja de Explicación -->
+            <div class="explanation-box" id="exp3">
+                <div class="exp-icon"><i class="fa-solid fa-circle-info"></i></div>
+                <div class="exp-content">
+                    <h4 id="title3"></h4>
+                    <p id="desc3"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPT DE INTERACTIVIDAD -->
+<script>
+    function checkAns(selectedElement, optionsContainerId, explanationBoxId, qIndex) {
+        const container = document.getElementById(optionsContainerId);
+        const options = container.querySelectorAll('.option');
+        const expBox = document.getElementById(explanationBoxId);
+        
+        const isCorrect = selectedElement.getAttribute('data-correct') === 'true';
+        const rationale = selectedElement.getAttribute('data-rationale');
+
+        // 1. Deshabilitar todas las opciones y revelar la correcta
+        options.forEach(opt => {
+            opt.classList.add('disabled');
+            // Revelar siempre cuál era la correcta
+            if (opt.getAttribute('data-correct') === 'true') {
+                opt.classList.add('correct-ans');
+            }
+        });
+
+        // 2. Si la que seleccionó el usuario es incorrecta, pintarla de rojo
+        if (!isCorrect) {
+            selectedElement.classList.add('wrong-ans');
+        }
+
+        // 3. Mostrar la caja de explicación con el color y texto adecuados
+        const titleEl = document.getElementById('title' + qIndex);
+        const descEl = document.getElementById('desc' + qIndex);
+        
+        // Limpiamos clases previas (por si acaso)
+        expBox.classList.remove('show-correct', 'show-wrong');
+
+        if (isCorrect) {
+            titleEl.innerText = "¡Respuesta Correcta!";
+            expBox.classList.add('show-correct');
+            expBox.querySelector('.exp-icon').innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        } else {
+            titleEl.innerText = "Respuesta Incorrecta";
+            expBox.classList.add('show-wrong');
+            expBox.querySelector('.exp-icon').innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+        }
+        
+        descEl.innerText = rationale;
+    }
+</script>
+
+</body>
+</html>
+```
