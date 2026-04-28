@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tarea Clase 2 La Poesía Hebrea</title>
+    <title>Tarea Clase 2</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -228,6 +228,73 @@
         }
         .explanation-box.show-wrong .exp-icon { color: #ef4444; }
 
+        /* ====== RESPONSIVE DESIGN (MÓVILES Y TABLETS) ====== */
+        @media (max-width: 900px) {
+            body {
+                padding: 20px 15px;
+                gap: 40px;
+            }
+
+            .slide-container {
+                min-height: auto;
+                border-radius: 16px;
+            }
+
+            .quiz-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .quiz-header h2 {
+                font-size: 22px;
+            }
+
+            .content-split {
+                grid-template-columns: 1fr; /* Cambia a 1 sola columna */
+                gap: 30px;
+                padding: 25px;
+                min-height: auto;
+            }
+
+            .image-wrapper {
+                height: 180px; /* Imagen más pequeña en móviles */
+                font-size: 45px;
+            }
+
+            .question-text {
+                padding: 20px;
+            }
+
+            .question-text h3 {
+                font-size: 18px;
+            }
+
+            .option {
+                padding: 12px 15px;
+                font-size: 16px;
+                gap: 15px;
+            }
+
+            .option-letter {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+
+            .explanation-box {
+                flex-direction: column; /* Apila el icono y el texto */
+                align-items: center;
+                text-align: center;
+                padding: 20px 15px;
+                gap: 10px;
+            }
+            
+            .exp-icon {
+                margin-top: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -422,4 +489,3 @@
 
 </body>
 </html>
-```
